@@ -885,7 +885,9 @@ button {
 .sheet {
   position: relative;
   width: 100%;
+  min-width: 0;
   max-width: 420px;
+  box-sizing: border-box;
   max-height: 90vh;
   overflow-y: auto;
   background: var(--card);
@@ -934,6 +936,9 @@ button {
 
 .input {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   padding: 13px 14px;
   background: #f3f5f9;
   border: 1px solid var(--border);
@@ -944,6 +949,13 @@ button {
   transition:
     border-color 0.15s,
     box-shadow 0.15s;
+}
+
+input[type="time"] {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .input:focus {
