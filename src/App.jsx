@@ -1623,7 +1623,7 @@ function App() {
     <main className="app">
       <header className="header">
 
-        <h1>Ежедневник 1.0 для пса</h1>
+        <h1>Ежедневник для пса</h1>
 
         <p>Сегодня:
           {' '}
