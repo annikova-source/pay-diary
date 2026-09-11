@@ -1288,14 +1288,25 @@ input[type="time"] {
 }
 
 /* =========================
-   Фикс iOS Safari / iPhone:
-   native input[type="time"] иногда
-   игнорирует ширину контейнера
+   Страховка для iOS:
+   поля времени/чисел не шире шитка
    ========================= */
 
+.sheet .field {
+  min-width: 0;
+  max-width: 100%;
+}
+
+input[type="time"],
+input[type="number"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+/* =========================
+   Исправление переполнения формы на телефонах
+   ========================= */
 html,
-body,
-#root {
+body {
   width: 100%;
   max-width: 100%;
   overflow-x: hidden;
@@ -1303,60 +1314,50 @@ body,
 
 .overlay {
   width: 100%;
-  max-width: 100vw;
+  max-width: 100%;
+  box-sizing: border-box;
   overflow-x: hidden;
 }
 
 .sheet {
-  width: min(100%, 420px);
+  width: 100%;
   max-width: 420px;
   min-width: 0;
   box-sizing: border-box;
   overflow-x: hidden;
 }
 
-.sheet .field {
-  width: 100%;
-  min-width: 0;
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
+.sheet .field,
 .sheet .input,
 .sheet input[type="time"],
 .sheet input[type="number"],
 .sheet textarea {
-  display: block;
-  width: 100% !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-  margin-left: 0;
-  margin-right: 0;
-}
-
-/*
- * Важно: НЕ отключаем нативный appearance у time input.
- * На iOS это может ломать его внутреннюю ширину.
- */
-.sheet input[type="time"] {
-  -webkit-appearance: auto;
-  appearance: auto;
-  inline-size: 100% !important;
-  max-inline-size: 100% !important;
-}
-
-.sheet input[type="time"]::-webkit-date-and-time-value {
   width: 100%;
-  min-width: 0;
-  margin: 0;
-}
-
-.sheet input[type="time"]::-webkit-datetime-edit {
-  min-width: 0;
   max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
-.sheet input[type="time"]::-webkit-calendar-picker-indicator {
-  max-width: 20px;
+.sheet input[type="time"] {
+  display: block;
+  min-inline-size: 0;
+  inline-size: 100%;
+}
+
+@media (max-width: 420px) {
+  .sheet {
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .sheet-actions {
+    min-width: 0;
+  }
+
+  .cancel-button,
+  .save-button,
+  .segment {
+    min-width: 0;
+  }
 }
