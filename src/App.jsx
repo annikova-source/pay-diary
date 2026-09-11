@@ -12,6 +12,46 @@ const meals = [
 const vomitingOptions = ['Не блевал', 'Блевал']
 const stoolOptions = ['Нормальный', 'Мягкий', 'Жидкий']
 
+// Кастомное поле времени вместо native input[type="time"].
+// На iOS Safari нативный time-control может выходить за границы контейнера.
+function TimeInput({ value, onChange, placeholder = 'ЧЧ:ММ' }) {
+  const handleChange = (event) => {
+    const digits = event.target.value.replace(/\D/g, '').slice(0, 4)
+
+    if (!digits) {
+      onChange('')
+      return
+    }
+
+    let hours = digits.slice(0, 2)
+    const minutes = digits.slice(2, 4)
+
+    if (hours.length === 2) {
+      hours = String(Math.min(23, Number(hours))).padStart(2, '0')
+    }
+
+    const safeMinutes = minutes
+      ? String(Math.min(59, Number(minutes))).padStart(2, '0')
+      : ''
+
+    onChange(digits.length > 2 ? `${hours}:${safeMinutes}` : hours)
+  }
+
+  return (
+    <input
+      className="input time-input"
+      type="text"
+      inputMode="numeric"
+      autoComplete="off"
+      maxLength={5}
+      placeholder={placeholder}
+      value={value || ''}
+      onChange={handleChange}
+      aria-label="Время в формате ЧЧ:ММ"
+    />
+  )
+}
+
 const getDateString = (date = new Date()) => {
   return (
     date.getFullYear() +
@@ -1786,13 +1826,9 @@ function App() {
                 Время
               </label>
 
-              <input
-                className="input"
-                type="time"
+              <TimeInput
                 value={time}
-                onChange={(event) =>
-                  setTime(event.target.value)
-                }
+                onChange={setTime}
               />
             </div>
 
@@ -1853,15 +1889,9 @@ function App() {
                   Время рвоты
                 </label>
 
-                <input
-                  className="input"
-                  type="time"
+                <TimeInput
                   value={vomitingTime}
-                  onChange={(event) =>
-                    setVomitingTime(
-                      event.target.value
-                    )
-                  }
+                  onChange={setVomitingTime}
                 />
               </div>
             )}
@@ -1944,15 +1974,9 @@ function App() {
                 Время стула
               </label>
 
-              <input
-                className="input"
-                type="time"
+              <TimeInput
                 value={stoolTime}
-                onChange={(event) =>
-                  setStoolTime(
-                    event.target.value
-                  )
-                }
+                onChange={setStoolTime}
               />
 
               <button
@@ -2040,30 +2064,18 @@ function App() {
                 Начало
               </label>
 
-              <input
-                className="input"
-                type="time"
+              <TimeInput
                 value={walkStart}
-                onChange={(event) =>
-                  setWalkStart(
-                    event.target.value
-                  )
-                }
+                onChange={setWalkStart}
               />
 
               <label className="label">
                 Конец
               </label>
 
-              <input
-                className="input"
-                type="time"
+              <TimeInput
                 value={walkEnd}
-                onChange={(event) =>
-                  setWalkEnd(
-                    event.target.value
-                  )
-                }
+                onChange={setWalkEnd}
               />
 
               {walkStart &&
