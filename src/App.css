@@ -1302,3 +1302,62 @@ input[type="number"] {
   -webkit-appearance: none;
   appearance: none;
 }
+/* =========================
+   Исправление переполнения формы на телефонах
+   ========================= */
+html,
+body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.overlay {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.sheet {
+  width: 100%;
+  max-width: 420px;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.sheet .field,
+.sheet .input,
+.sheet input[type="time"],
+.sheet input[type="number"],
+.sheet textarea {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.sheet input[type="time"] {
+  display: block;
+  min-inline-size: 0;
+  inline-size: 100%;
+}
+
+@media (max-width: 420px) {
+  .sheet {
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .sheet-actions {
+    min-width: 0;
+  }
+
+  .cancel-button,
+  .save-button,
+  .segment {
+    min-width: 0;
+  }
+}
