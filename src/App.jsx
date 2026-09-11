@@ -186,7 +186,14 @@ function App() {
   )
 
   const [time, setTime] = useState('')
-  const [grams, setGrams] = useState('110')
+  const [grams, setGrams] = useState('')
+
+  const defaultGrams = {
+    morning: '36',
+    day: '36',
+    evening: '50',
+    night: '50',
+  }
   const [vomiting, setVomiting] = useState('Не блевал')
   const [vomitingTime, setVomitingTime] = useState('')
 
@@ -549,7 +556,9 @@ function App() {
     )
 
     setGrams(
-      existing ? String(existing.grams) : '110'
+      existing
+        ? String(existing.grams)
+        : defaultGrams[mealId] || ''
     )
 
     setVomiting(
@@ -1779,12 +1788,28 @@ function App() {
 
             <strong>
               {walkRecords.length > 0
-                ? `${walkRecords.length} ${
-                    walkRecords.length ===
-                    1
-                      ? 'прогулка'
-                      : 'прогулки'
-                  }`
+                ? (() => {
+                    const hours = Math.floor(
+                      totalWalkMinutes / 60
+                    )
+                    const minutes =
+                      totalWalkMinutes % 60
+                    const countLabel =
+                      walkRecords.length === 1
+                        ? 'прогулка'
+                        : walkRecords.length >= 2 &&
+                          walkRecords.length <= 4
+                        ? 'прогулки'
+                        : 'прогулок'
+                    const timeLabel =
+                      hours > 0 && minutes > 0
+                        ? `${hours} ч ${minutes} мин`
+                        : hours > 0
+                        ? `${hours} ч`
+                        : `${minutes} мин`
+
+                    return `${walkRecords.length} ${countLabel} · ${timeLabel}`
+                  })()
                 : 'Не указано'}
             </strong>
           </div>
