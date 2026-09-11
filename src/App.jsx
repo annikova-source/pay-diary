@@ -9,6 +9,8 @@ const meals = [
   { id: 'night', icon: '🌙', name: 'Ночь' },
 ]
 
+const standardMealIds = new Set(meals.map((meal) => meal.id))
+
 const vomitingOptions = ['Не блевал', 'Блевал']
 const stoolOptions = ['Нормальный', 'Мягкий', 'Жидкий']
 
@@ -1007,6 +1009,11 @@ function App() {
     (meal) => meal.id === activeMeal
   )
 
+  const activeEntry = activeMeal ? entries[activeMeal] : null
+  const isExtraMeal = Boolean(
+    activeMeal && !standardMealIds.has(activeMeal)
+  )
+
   const calendarDays = useMemo(() => {
     const year = calendarMonth.getFullYear()
     const month = calendarMonth.getMonth()
@@ -1720,12 +1727,44 @@ function App() {
             </article>
           )
         })}
+
+        {Object.values(entries)
+          .filter((entry) => !standardMealIds.has(entry.meal))
+          .sort((a, b) => a.entry_time.localeCompare(b.entry_time))
+          .map((entry) => (
+            <article
+              className="meal-card extra-meal-card"
+              key={entry.id}
+              onClick={() => openForm(entry.meal)}
+            >
+              <div className="meal-header">
+                <span className="meal-title">
+                  🥣 Дополнительное кормление
+                </span>
+                <span className="meal-time">
+                  {entry.time}
+                </span>
+              </div>
+
+              <div className="meal-info">
+                <span>{entry.grams} г</span>
+                <span>
+                  {entry.vomiting === 'Блевал'
+                    ? '🤢 Блевал' +
+                      (entry.vomiting_time
+                        ? ` в ${entry.vomiting_time}`
+                        : '')
+                    : '❌ Не блевал'}
+                </span>
+              </div>
+            </article>
+          ))}
       </section>
 
         <button
           className="add-button"
           onClick={() =>
-            openForm('morning')
+            openForm(`extra-${Date.now()}`)
           }
         >
           ＋ Добавить приём пищи
@@ -1853,8 +1892,7 @@ function App() {
             }
           >
             <h2 className="sheet-title">
-              {activeMealData?.icon}{' '}
-              {activeMealData?.name}
+              {isExtraMeal ? '🥣 Дополнительное кормление' : (activeMealData?.icon + ' ' + activeMealData?.name)}
             </h2>
 
             <div className="field">

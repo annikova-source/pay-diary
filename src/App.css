@@ -1320,3 +1320,7 @@ button {
   .sheet { width: 100%; max-width: 420px; min-width: 0; overflow-x: hidden; }
   .time-input, .time-part { max-width: 100%; min-width: 0; }
 }
+
+.extra-meal-card {
+  border-left: 3px solid var(--accent, #4f8cff);
+}
