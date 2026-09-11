@@ -1286,3 +1286,19 @@ input[type="time"] {
   color: var(--red);
   border-color: rgba(229, 72, 77, 0.45);
 }
+
+/* =========================
+   Страховка для iOS:
+   поля времени/чисел не шире шитка
+   ========================= */
+
+.sheet .field {
+  min-width: 0;
+  max-width: 100%;
+}
+
+input[type="time"],
+input[type="number"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
