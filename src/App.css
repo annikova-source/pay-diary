@@ -951,13 +951,6 @@ button {
     box-shadow 0.15s;
 }
 
-input[type="time"] {
-  width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  box-sizing: border-box;
-}
-
 .input:focus {
   border-color: var(--accent);
   box-shadow:
@@ -1292,40 +1285,38 @@ input[type="time"] {
    ========================= */
 
 .time-input {
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
   width: 100%;
   max-width: 100%;
   min-width: 0;
+}
+
+.time-part {
+  width: 100%;
+  min-width: 0;
   height: 50px;
-  box-sizing: border-box;
-  text-align: left;
-  letter-spacing: 0.02em;
+  text-align: center;
+  padding-left: 10px;
+  padding-right: 10px;
   -webkit-appearance: none;
   appearance: none;
 }
 
-.time-input::placeholder {
-  color: #9aa3b2;
-  opacity: 1;
+.time-separator {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-dim);
+  line-height: 1;
 }
 
+.time-field { margin-bottom: 18px; }
+.time-field:last-child { margin-bottom: 0; }
+
 @media (max-width: 420px) {
-  .overlay {
-    width: 100%;
-    max-width: 100vw;
-    overflow-x: hidden;
-  }
-
-  .sheet {
-    width: 100%;
-    max-width: 420px;
-    min-width: 0;
-    overflow-x: hidden;
-  }
-
-  .time-input {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-  }
+  .overlay { width: 100%; max-width: 100vw; overflow-x: hidden; }
+  .sheet { width: 100%; max-width: 420px; min-width: 0; overflow-x: hidden; }
+  .time-input, .time-part { max-width: 100%; min-width: 0; }
 }

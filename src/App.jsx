@@ -14,41 +14,52 @@ const stoolOptions = ['Нормальный', 'Мягкий', 'Жидкий']
 
 // Кастомное поле времени вместо native input[type="time"].
 // На iOS Safari нативный time-control может выходить за границы контейнера.
-function TimeInput({ value, onChange, placeholder = 'ЧЧ:ММ' }) {
-  const handleChange = (event) => {
-    const digits = event.target.value.replace(/\D/g, '').slice(0, 4)
+function TimeInput({ value, onChange }) {
+  const [hours, setHours] = useState('')
+  const [minutes, setMinutes] = useState('')
+  const minutesRef = useRef(null)
 
-    if (!digits) {
-      onChange('')
-      return
-    }
+  useEffect(() => {
+    const match = String(value || '').slice(0, 5).match(/^(\d{1,2})(?::(\d{1,2}))?$/)
+    if (!match) { setHours(''); setMinutes(''); return }
+    setHours(match[1].padStart(2, '0'))
+    setMinutes((match[2] || '').padStart(2, '0'))
+  }, [value])
 
-    let hours = digits.slice(0, 2)
-    const minutes = digits.slice(2, 4)
+  const publish = (h, m) => {
+    if (h.length === 2 && m.length === 2) onChange(`${h}:${m}`)
+    else if (!h && !m) onChange('')
+  }
 
-    if (hours.length === 2) {
-      hours = String(Math.min(23, Number(hours))).padStart(2, '0')
-    }
+  const handleHoursChange = (event) => {
+    const h = event.target.value.replace(/\D/g, '').slice(0, 2)
+    setHours(h)
+    publish(h, minutes)
+  }
 
-    const safeMinutes = minutes
-      ? String(Math.min(59, Number(minutes))).padStart(2, '0')
-      : ''
+  const handleMinutesChange = (event) => {
+    const m = event.target.value.replace(/\D/g, '').slice(0, 2)
+    setMinutes(m)
+    publish(hours, m)
+  }
 
-    onChange(digits.length > 2 ? `${hours}:${safeMinutes}` : hours)
+  const normalize = () => {
+    if (!hours && !minutes) { onChange(''); return }
+    const h = String(Math.min(23, Number(hours || 0))).padStart(2, '0')
+    const m = String(Math.min(59, Number(minutes || 0))).padStart(2, '0')
+    setHours(h); setMinutes(m); onChange(`${h}:${m}`)
+  }
+
+  const handleHoursKeyDown = (event) => {
+    if (event.key === ':') { event.preventDefault(); minutesRef.current?.focus() }
   }
 
   return (
-    <input
-      className="input time-input"
-      type="text"
-      inputMode="numeric"
-      autoComplete="off"
-      maxLength={5}
-      placeholder={placeholder}
-      value={value || ''}
-      onChange={handleChange}
-      aria-label="Время в формате ЧЧ:ММ"
-    />
+    <div className="time-input">
+      <input className="input time-part" type="text" inputMode="numeric" autoComplete="off" maxLength={2} placeholder="ЧЧ" value={hours} onChange={handleHoursChange} onBlur={normalize} onKeyDown={handleHoursKeyDown} aria-label="Часы" />
+      <span className="time-separator">:</span>
+      <input ref={minutesRef} className="input time-part" type="text" inputMode="numeric" autoComplete="off" maxLength={2} placeholder="ММ" value={minutes} onChange={handleMinutesChange} onBlur={normalize} aria-label="Минуты" />
+    </div>
   )
 }
 
@@ -1970,14 +1981,12 @@ function App() {
                 )}
               </div>
 
-              <label className="label">
-                Время стула
-              </label>
-
-              <TimeInput
-                value={stoolTime}
-                onChange={setStoolTime}
-              />
+              <div className="field time-field">
+                <label className="label">
+                  Время стула
+                </label>
+                <TimeInput value={stoolTime} onChange={setStoolTime} />
+              </div>
 
               <button
                 className="add-meal"
@@ -2060,23 +2069,15 @@ function App() {
                 🐕 Прогулки
               </label>
 
-              <label className="label">
-                Начало
-              </label>
+              <div className="field time-field">
+                <label className="label">Начало</label>
+                <TimeInput value={walkStart} onChange={setWalkStart} />
+              </div>
 
-              <TimeInput
-                value={walkStart}
-                onChange={setWalkStart}
-              />
-
-              <label className="label">
-                Конец
-              </label>
-
-              <TimeInput
-                value={walkEnd}
-                onChange={setWalkEnd}
-              />
+              <div className="field time-field">
+                <label className="label">Конец</label>
+                <TimeInput value={walkEnd} onChange={setWalkEnd} />
+              </div>
 
               {walkStart &&
                 walkEnd &&
